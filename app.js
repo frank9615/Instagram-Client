@@ -89,21 +89,23 @@ app.get('/', function (req, res) {
   	//GET ALL 
   	responses = [];
   	for(i = 0 ; i< profiles.length ; i++){
-    	responses[responses.length]=myigs.getDescriptor(profiles[i]);
+		responses[responses.length]=myigs.getDescriptor(profiles[i]);
   	}
-  	//console.log(responses);
 
 	//Take profile pics and name
 	for(i = 0 ; i< profiles.length ; i++){
+		
        profilehtml+='<img onclick="myshow(this)" id="'+i+'"src="'+ myigs.getProfileImagefd(responses[i]) +'"><span>'+profiles[i]+'</span>';
 	   }
 	profilehtml+="</div>";
 
    	//Take Stories img and video 
    	for(k=0;k<profiles.length; k++){
-		console.log(profiles[k]);
-     	var stories = myigs.getStoriesfd(responses[k]);
-		   
+		 var stories = myigs.getStoriesfd(responses[k]);
+		 if (stories== null){
+			 continue;
+		 }
+
 		if (stories.length > 0 ){
 	 		storieshtml+= '<div id="div'+k+'"class="stories-bar" >';
 			   
