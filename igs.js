@@ -9,52 +9,46 @@ function Stories(mediatype , img , video , link ){
 
 var fd = {
     getDescriptor: function (profile_name) {
-        var res = request('POST', 'https://api.insta-stories.ru/profile', {
-            json: {
-                string: profile_name
-            }
-        });
-        var fd = res.getBody('utf8');
-        fd = JSON.parse(fd);
-        return fd;
-    },
-    getProfileImage: function (name) {
-        fd=this.getDescriptor(name);
-        var profile_image = fd.user.picture;
-        return profile_image;
+        try{
+            var res = request('POST', 'https://api.insta-stories.ru/profile', {
+                json: {
+                    string: profile_name
+                }
+            });
+            var fd = res.getBody('utf8');
+            fd = JSON.parse(fd);
+            return fd;
+        }catch(e){
+            fd = JSON.parse(e.body);
+            return fd;
+        }
     },
     getProfileImagefd: function (fd){
-        return fd.user.picture;
-    },
-    getFullName: function (name) {
-        fd=this.getDescriptor(name);
-        var fullName = fd.user.fullName;
-        return fullName;
-    },
-    getStories: function (name) {
-        var fd = this.getDescriptor(name);
-        var stories = [];
-        var num_element = fd.stories.length ; 
-        if(num_element < 0 ){
-            return null; 
+        if(fd.hasOwnProperty('user')){
+            return fd.user.picture;
+        }else if(fd.hasOwnProperty('username')){
+            return fd.username.picture;
         }
-        for(i = 0 ; i< num_element ; i++){
-            var story= fd.stories[i];
-            stories[stories.length] = new Stories (story.mediaType, story.img, story.video, story.link);
-        }
-        return stories; 
+        return null;
     },
     getStoriesfd: function (fd){
-        var stories = [];
-        var num_element = fd.stories.length ; 
-        if(num_element < 0 ){
-            return null; 
+        if(fd!=null){
+            var stories = [];
+            if(!fd.hasOwnProperty('stories')){
+                return null;
+            }
+            var stories = [];
+            var num_element = fd.stories.length ; 
+            if(num_element < 0 ){
+                return null; 
+            }
+            for(i = 0 ; i< num_element ; i++){
+                var story= fd.stories[i];
+                stories[stories.length] = new Stories (story.mediaType, story.img, story.video, story.link);
+            }
+            return stories;
         }
-        for(i = 0 ; i< num_element ; i++){
-            var story= fd.stories[i];
-            stories[stories.length] = new Stories (story.mediaType, story.img, story.video, story.link);
-        }
-        return stories;
+        return null;
     }
 };
 
