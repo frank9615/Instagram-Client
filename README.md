@@ -17,5 +17,3 @@ node app.js
 - In future i will add the support to show:
   1. posts
   2. highlights
-## Things to fix
-- Users with no histories 
